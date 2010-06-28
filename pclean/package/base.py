@@ -19,28 +19,35 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            #
 ########################################################################
 
+import output
+
 class Base:
     def __init__(self):
         self._cpvs = {}
-        self._read_file()
 
-    def _read_file(self):
+    def _read_file(self, file):
         """Read the file into a dictionary mapping the cpv to any flags.
 
         We read each line in and the first item space delimited becomes 
         a key in the dictionary.
         """
-        file = open(self._filename, 'r')
-        for line in file:
+
+        f = open(file, 'r')
+        for line in f:
             sline = line.split()
             if sline[0] in self._cpvs:
               self._cpvs[sline[0]].extend(sline[1:])
             else:
               self._cpvs[sline[0]] = sline[1:]
         file.close()
+        output.debug("self._cpvs %s", self._cpvs)
 
     def _write_file(self):
-        pass
+        """Write the dictionary for this particular file.
+
+        """
+
+        f = open(file, 'w')
 
     def _write_directories(self):
         pass
