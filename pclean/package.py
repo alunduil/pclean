@@ -73,10 +73,11 @@ class Package:
                     os.remove(os.path.join(root, name))
                 for name in dirs:
                     os.rmdir(os.path.join(root, name))
+            os.rmdir(file)
 
         f = open(file, 'w')
         for key in sorted(self._cpvs.iterkeys()):
-            f.write("%s %s" % key, ' '.join(self._cpvs[key]))
+            f.write("%s %s\n" % (key, ' '.join(self._cpvs[key])))
 
     def _read_directories(self):
         if self._debug: output.debug(__file__, "os.walk(self._root_file) -> %s", os.walk(self._root_file))
