@@ -24,6 +24,9 @@ import optparse
 import textwrap
 import os
 
+import output
+from package import Package
+
 class PClean:
     def __init__(self, argv):
         self._debug = False
@@ -42,9 +45,30 @@ class PClean:
         # If we have verbose we shouldn't be quiet.
         if self._verbose: self._quiet = False
 
+        # Other option handling ...
+        self._destructive = variables.destructive
+        self._reorganize = variables.reorganize
+
     def Run(self):
-        
-        pass
+        """Run the application ...
+
+        We first need to read in all of our package.* files.
+        Then we simply write them out with the correct method.
+        We pass a flag to check for installed packages.
+
+        """
+        files_list = [
+            "/etc/portage/package.use",
+            "/etc/portage/package.unmask",
+            "/etc/portage/package.mask",
+            "/etc/portage/package.keywords",
+            "/etc/portage/package.license"
+            ]
+        for file in files_list:
+            file = Package(file, self._destructive, self._debug)
+            file.open()
+            if self._verbose: output.verbose(file.__unicode__())
+            file.close()
 
     def _parseOptions(self, argv, parser):
         verbose_help_list = [
@@ -56,7 +80,7 @@ class PClean:
         debug_help_list = [
             "Sets debugging output (implies verbose output)."
             ]
-        parser.add_option('--debug', '-d', action='store_true',
+        parser.add_option('--debug', '-D', action='store_true',
             default=False, help=''.join(debug_help_list))
 
         quiet_help_list = [
@@ -65,6 +89,18 @@ class PClean:
             ]
         parser.add_option('--quiet', '-q', action='store_true',
             default=False, help=''.join(quiet_help_list))
+
+        reorganize_help_list = [
+            "Reorganizes the files into a directory structure."
+            ]
+        parser.add_option('--reorganize', '-r', action='store_true',
+            default=False, help=''.join(reorganize_help_list))
+
+        destructive_help_list = [
+            "Removes packages that aren't installed on the system anymore."
+            ]
+        parser.add_option('--destructive', '-d', action='store_true',
+            default=False, help=''.join(destructive_help_list))
 
         return parser.parse_args()
 

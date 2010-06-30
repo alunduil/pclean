@@ -19,11 +19,31 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            #
 ########################################################################
 
+import os
+
 import output
 
-class Base:
-    def __init__(self):
+class Package:
+    def __init__(self, file, check_installed = False, debug = False):
+        self._root_file = file
+        self._debug = debug
+        if self._debug: output.debug(__file__, "self._root_file -> %s", self._root_file)
         self._cpvs = {}
+
+    def open(self):
+        self._read_directories()
+
+    def close(self, directories = False):
+        if directories:
+            self._write_directories()
+        else:
+            self._write_file(self._root_file)
+
+    def __unicode__(self):
+        out = ""
+        for key in sorted(self._cpvs.iterkeys()):
+            out += "%s %s\n" % (key, ' '.join(self._cpvs[key]))
+        return out
 
     def _read_file(self, file):
         """Read the file into a dictionary mapping the cpv to any flags.
@@ -39,19 +59,43 @@ class Base:
               self._cpvs[sline[0]].extend(sline[1:])
             else:
               self._cpvs[sline[0]] = sline[1:]
-        file.close()
-        output.debug("self._cpvs %s", self._cpvs)
+        f.close()
+        if self._debug: output.debug("self._cpvs %s", self._cpvs)
 
-    def _write_file(self):
+    def _write_file(self, file):
         """Write the dictionary for this particular file.
 
         """
 
+        if os.path.isdir(file):
+            for root, dirs, files in os.walk(file, topdown=False):
+                for name in files:
+                    os.remove(os.path.join(root, name))
+                for name in dirs:
+                    os.rmdir(os.path.join(root, name))
+
         f = open(file, 'w')
+        for key in sorted(self._cpvs.iterkeys()):
+            f.write("%s %s" % key, ' '.join(self._cpvs[key]))
+
+    def _read_directories(self):
+        if self._debug: output.debug(__file__, "os.walk(self._root_file) -> %s", os.walk(self._root_file))
+        if os.path.isdir(self._root_file):
+            for root, dirs, files in os.walk(self._root_file):
+                if self._debug:
+                    output.debug(__file__, "root -> %s", root)
+                    output.debug(__file__, "dirs -> %s", dirs)
+                    output.debug(__file__, "files -> %s", files)
+                for file in files:
+                    if self._debug: output.debug(__file__, "os.path.join(root, file) -> %s", os.path.join(root, file))
+                    if os.path.isfile(os.path.join(root, file)):
+                        self._read_file(os.path.join(root, file))
+        else:
+            self._read_file(self._root_file)
 
     def _write_directories(self):
         pass
 
-    def _remove_stale_packages(self):
+    def _remove_uninstalled_packages(self):
         pass
 

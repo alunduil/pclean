@@ -29,13 +29,11 @@ class Colors:
     LIGHT_BLUE = "\033[01;34m"
     LIGHT_GREEN = "\033[01;32m"
 
-def debug(file, dict):
-    for key, value in dict.iteritems():
-        output = [
-            Colors.YELLOW, file, ":", str(stack()[1][2]), ": DEBUG: ",
-            unicode(key), " -> ", unicode(value), Colors.GRAY
-            ]
-        print >> stderr, "".join(output)
+def debug(file, msg, *args):
+    output = Colors.YELLOW + file + ":" + str(stack()[1][2]) + ": DEBUG: "
+    if len(args) > 0: output += msg % args
+    else: output += unicode(msg)
+    print >> stderr, output + Colors.GRAY
 
 def verbose(msg, *args):
     output = Colors.LIGHT_BLUE
