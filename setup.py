@@ -30,7 +30,7 @@ setup(name='pclean',
     url="http://www.alunduil.com/programs/pclean/",
     license="GPL-2",
     scripts=["pclean.py"],
-    packages=['pclean', 'pclean/package'],
+    packages=['pclean'],
     data_files=[("", ['COPYING'])]
     )
 
