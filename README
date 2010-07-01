@@ -4,15 +4,15 @@ About
 
 Author: Alex Brandt <alunduil@alunduil.com>
 Date: 2010/02/25
-Web URL: http://www.alunduil.com/programs/upkern
+Web URL: http://www.alunduil.com/programs/pclean
 Bugzilla URL: http://bugzilla.alunduil.com
 
 ----
 Description
 ----
 
-This utility is a batch kernel updating utility written specifically
-for the Gentoo Linux (TM).  
+This utility is a /etc/portage/package.* cleaning utility written 
+specifically for the Gentoo Linux (TM).  
 
 This program was written on a machine with the following software:
  * Gentoo (default/linux/amd64/10.0/desktop) x86_64

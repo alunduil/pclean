@@ -24,8 +24,10 @@ import os
 import output
 
 class Package:
-    def __init__(self, file, check_installed = False, debug = False):
+    def __init__(self, file, check_installed = False, sort = False, debug = False):
         self._root_file = file
+        self._check_installed = check_installed
+        self._sort = sort
         self._debug = debug
         if self._debug: output.debug(__file__, "self._root_file -> %s", self._root_file)
         self._cpvs = {}
@@ -33,16 +35,23 @@ class Package:
     def open(self):
         self._read_directories()
 
-    def close(self, directories = False):
+    def write(self, directories = False):
         if directories:
             self._write_directories()
         else:
             self._write_file(self._root_file)
 
+    def close(self):
+        pass
+
     def __unicode__(self):
         out = ""
-        for key in sorted(self._cpvs.iterkeys()):
-            out += "%s %s\n" % (key, ' '.join(self._cpvs[key]))
+        if self._sort:
+            for key in sorted(self._cpvs.iterkeys()):
+                out += "%s %s\n" % (key, ' '.join(self._cpvs[key]))
+        else:
+            for key,value in self._cpvs.items():
+                out += "%s %s\n" % (key, ' '.join(value))
         return out
 
     def _read_file(self, file):
@@ -76,8 +85,12 @@ class Package:
             os.rmdir(file)
 
         f = open(file, 'w')
-        for key in sorted(self._cpvs.iterkeys()):
-            f.write("%s %s\n" % (key, ' '.join(self._cpvs[key])))
+        if self._sort:
+            for key in sorted(self._cpvs.iterkeys()):
+                f.write("%s %s\n" % (key, ' '.join(self._cpvs[key])))
+        else:
+            for key,value in self._cpvs.items():
+                f.write("%s %s\n" % (key, ' '.join(value)))
 
     def _read_directories(self):
         if self._debug: output.debug(__file__, "os.walk(self._root_file) -> %s", os.walk(self._root_file))

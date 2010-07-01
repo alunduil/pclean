@@ -48,6 +48,8 @@ class PClean:
         # Other option handling ...
         self._destructive = variables.destructive
         self._reorganize = variables.reorganize
+        self._sort = variables.sort
+        self._pretend = variables.pretend
 
     def Run(self):
         """Run the application ...
@@ -64,10 +66,13 @@ class PClean:
             "/etc/portage/package.keywords",
             "/etc/portage/package.license"
             ]
-        for file in files_list:
-            file = Package(file, self._destructive, self._debug)
+        for name in files_list:
+            file = Package(name, self._destructive, self._sort, self._debug)
             file.open()
-            if self._verbose: output.verbose(file.__unicode__())
+            if self._pretend: 
+                output.verbose("%s:", name)
+                output.verbose(file.__unicode__())
+            else: file.write()
             file.close()
 
     def _parseOptions(self, argv, parser):
@@ -101,6 +106,18 @@ class PClean:
             ]
         parser.add_option('--destructive', '-d', action='store_true',
             default=False, help=''.join(destructive_help_list))
+
+        sort_help_list = [
+            "Sort the packages in alphabetical order."
+            ]
+        parser.add_option('--sort', '-s', action='store_true',
+            default=False, help=''.join(sort_help_list))
+
+        pretend_help_list = [
+            "Pretend but don't actually write anything."
+            ]
+        parser.add_option('--pretend', '-p', action='store_true',
+            default=False, help=''.join(pretend_help_list))
 
         return parser.parse_args()
 
