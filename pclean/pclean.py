@@ -72,7 +72,7 @@ class PClean:
             if self._pretend: 
                 output.verbose("%s:", name)
                 output.verbose(file.__unicode__())
-            else: file.write()
+            else: file.write(self._reorganize)
             file.close()
 
     def _parseOptions(self, argv, parser):

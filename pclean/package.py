@@ -34,6 +34,7 @@ class Package:
 
     def open(self):
         self._read_directories()
+        if self._check_installed: self._remove_uninstalled_packages()
 
     def write(self, directories = False):
         if directories:
@@ -111,5 +112,14 @@ class Package:
         pass
 
     def _remove_uninstalled_packages(self):
-        pass
+        from gentoolkit.helpers import get_installed_cpvs
+        
+        for cpv in self._cpvs.keys():
+            scpv = cpv.split('=')[-1].split('<')[-1].split('>')[-1]
+            if self._debug: output.debug(__file__, "scpv: %s", scpv)
+            pred = lambda x: x.startswith(scpv)
+            if self._debug: 
+                output.debug(__file__, "len(set(get_installed_cpvs(pred))): %s", len(set(get_installed_cpvs(pred))))
+            if len(set(get_installed_cpvs(pred))) <= 0:
+                self._cpvs.pop(cpv)
 
