@@ -108,8 +108,33 @@ class Package:
         else:
             self._read_file(self._root_file)
 
-    def _write_directories(self):
-        pass
+    def _make_directory(self, dir):
+        if not os.path.isdir(dir):
+            if os.path.isfile(file): os.remove(file)
+            os.mkdir(file)
+
+    def _make_file(self, file):
+        if not os.path.isfile(file):
+            if os.path.isdir(file):
+                for root, dirs, files in os.walk(top, topdown=False):
+                    for name in files:
+                        os.remove(os.path.join(root, name))
+                    for name in dirs:
+                        os.rmdir(os.path.join(root, name))
+            else: os.remove(file)
+
+    def _write_directories(self, file):
+        from gentookit.cpv import CPV
+        
+        self._make_directory(file)
+        
+        for key,value in self._cpvs.items():
+            cpv = CPV(key.split('=')[-1].split('>')[-1].split('<')[-1])
+            self._make_directory(os.path.join(file, cpv.category))
+
+            f = open(os.path.join(file, cpv.category, cpv.name), 'w')
+            f.write("%s %s\n" % (key, ' '.join(value)))
+            f.close()
 
     def _remove_uninstalled_packages(self):
         from gentoolkit.helpers import get_installed_cpvs
