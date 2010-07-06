@@ -38,7 +38,7 @@ class Package:
 
     def write(self, directories = False):
         if directories:
-            self._write_directories()
+            self._write_directories(self._root_file)
         else:
             self._write_file(self._root_file)
 
@@ -110,8 +110,8 @@ class Package:
 
     def _make_directory(self, dir):
         if not os.path.isdir(dir):
-            if os.path.isfile(file): os.remove(file)
-            os.mkdir(file)
+            if os.path.isfile(dir): os.remove(dir)
+            os.mkdir(dir)
 
     def _make_file(self, file):
         if not os.path.isfile(file):
@@ -124,7 +124,7 @@ class Package:
             else: os.remove(file)
 
     def _write_directories(self, file):
-        from gentookit.cpv import CPV
+        from gentoolkit.cpv import CPV
         
         self._make_directory(file)
         
