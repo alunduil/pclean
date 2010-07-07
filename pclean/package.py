@@ -133,6 +133,9 @@ class Package:
             self._make_directory(os.path.join(file, cpv.category))
 
             f = open(os.path.join(file, cpv.category, cpv.name), 'w')
+            if self._debug:
+                output.debug(__file__, "path: %s", os.path.join(file, cpv.category, cpv.name))
+                output.debug(__file__, "%s %s", key, ' '.join(value))
             f.write("%s %s\n" % (key, ' '.join(value)))
             f.close()
 
