@@ -67,6 +67,7 @@ class PClean:
             "/etc/portage/package.license"
             ]
         for name in files_list:
+            if not os.access(name, os.F_OK): continue
             file = Package(name, self._destructive, self._sort, self._debug)
             file.open()
             if self._pretend: 
