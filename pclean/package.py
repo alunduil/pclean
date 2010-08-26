@@ -143,7 +143,12 @@ class Package:
         from gentoolkit.helpers import get_installed_cpvs
         
         for cpv in self._cpvs.keys():
+            from gentoolkit.cpv import split_cpv
             scpv = cpv.split('=')[-1].split('<')[-1].split('>')[-1]
+            try:
+                (category, pkg_name, version, revision) = split_cpv(scpv)
+                scpv = category + "/" + pkg_name
+            except: continue
             if self._debug: output.debug(__file__, "scpv: %s", scpv)
             pred = lambda x: x.startswith(scpv)
             if self._debug: 
