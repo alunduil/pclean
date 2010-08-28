@@ -65,13 +65,15 @@ class Package:
         f = open(file, 'r')
         for line in f:
             sline = line.split()
-	    if sline[0] in self._cpvs:
+	          if sline[0] in self._cpvs:
               self._cpvs[sline[0]].extend(sline[1:])
             else:
               self._cpvs[sline[0]] = sline[1:]
-	    for flag in sline[1:]:
-	      while self._cpvs[sline[0]].count(flag) > 1:
-	      	self._cpvs[sline[0]].remove(flag)
+            
+            for flag in sline[1:]:
+              while self._cpvs[sline[0]].count(flag) > 1:
+                self._cpvs[sline[0]].remove(flag)
+
         f.close()
         if self._debug: output.debug("self._cpvs %s", self._cpvs)
 
