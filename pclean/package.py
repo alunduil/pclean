@@ -65,7 +65,7 @@ class Package:
         f = open(file, 'r')
         for line in f:
             sline = line.split()
-	          if sline[0] in self._cpvs:
+            if sline[0] in self._cpvs:
               self._cpvs[sline[0]].extend(sline[1:])
             else:
               self._cpvs[sline[0]] = sline[1:]
@@ -149,15 +149,19 @@ class Package:
         
         for cpv in self._cpvs.keys():
             from gentoolkit.cpv import split_cpv
-            scpv = cpv.split('=')[-1].split('<')[-1].split('>')[-1]
+            scpv = rcpv = cpv.split('=')[-1].split('<')[-1].split('>')[-1]
             try:
-                (category, pkg_name, version, revision) = split_cpv(scpv)
+                (category, pkg_name, version, revision) = split_cpv(rcpv)
                 scpv = category + "/" + pkg_name
             except: continue
             if self._debug: output.debug(__file__, "scpv: %s", scpv)
             pred = lambda x: x.startswith(scpv)
             if self._debug: 
-                output.debug(__file__, "len(set(get_installed_cpvs(pred))): %s", len(set(get_installed_cpvs(pred))))
-            if len(set(get_installed_cpvs(pred))) <= 0:
+                output.debug(__file__, "list(get_installed_cpvs(pred)): %s", list(get_installed_cpvs(pred)))
+                output.debug(__file__, "rcpv: %s", rcpv)
+                output.debug(__file__, "''.join(list(get_installed_cpvs(pred))): %s", ''.join(list(get_installed_cpvs(pred))))
+            import re
+            if not re.search(rcpv, ''.join(list(get_installed_cpvs(pred)))):
+                output.verbose("Could not find %s installed on the system!", rcpv)
                 self._cpvs.pop(cpv)
 
