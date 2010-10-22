@@ -162,6 +162,6 @@ class Package:
                 output.debug(__file__, "''.join(list(get_installed_cpvs(pred))): %s", ''.join(list(get_installed_cpvs(pred))))
             import re
             if not re.search(rcpv, ''.join(list(get_installed_cpvs(pred)))):
-                output.verbose("Could not find %s installed on the system!", rcpv)
+                if self._verbose: output.verbose("Could not find %s installed on the system!", rcpv)
                 self._cpvs.pop(cpv)
 
