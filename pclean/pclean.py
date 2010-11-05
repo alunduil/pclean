@@ -59,22 +59,21 @@ class PClean:
         We pass a flag to check for installed packages.
 
         """
-        files_list = [
+        files = [
             "/etc/portage/package.use",
             "/etc/portage/package.unmask",
             "/etc/portage/package.mask",
             "/etc/portage/package.keywords",
-            "/etc/portage/package.license"
+            "/etc/portage/package.license",
             ]
-        for name in files_list:
-            if not os.access(name, os.F_OK): continue
-            file = Package(name, self._destructive, self._sort, self._debug)
-            file.open()
+        for f in files:
+            if not os.access(f, os.W_OK): continue
+            pf = PackageFile(f, self._pretend, self._debug, self._verbose)
+            if self._destructive: pf.clean()
             if self._pretend: 
                 output.verbose("%s:", name)
-                output.verbose(file.__unicode__())
-            else: file.write(self._reorganize)
-            file.close()
+                output.verbose(pf)
+            else: pf.write(self._reorganize)
 
     def _parseOptions(self, argv, parser):
         verbose_help_list = [
