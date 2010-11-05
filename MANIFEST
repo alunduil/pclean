@@ -1,8 +1,0 @@
-COPYING
-README
-pclean.py
-setup.py
-pclean/__init__.py
-pclean/output.py
-pclean/package.py
-pclean/pclean.py
