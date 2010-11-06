@@ -69,22 +69,34 @@ class PackageFile:
             self._write_file(self._f)
 
     def _write_directory(self, d):
-        self._create_directory(d)
+        if not self._dry_run:
+            self._create_directory(d)
 
-        for p in self._packages:
-            c = os.path.join(d, p.category())
-            self._create_directory(c)
-            a = os.path.join(c, p.atom())
-            f = open(a, 'w')
-            f.write(p)
-            f.close()
+            for p in self._packages:
+                c = os.path.join(d, p.category())
+                self._create_directory(c)
+                a = os.path.join(c, p.atom())
+                f = open(a, 'w')
+                f.write(p)
+                f.close()
+        else:
+            pycolorize.verbose("mkdir -p %s" % d)
+            for p in self._package:
+                c = os.path.join(d, p.category())
+                pycolorize.verbose("mkdir -p %s" % c) 
+                a = os.path.join(c, p.atom())
+                pycolorize.verbose("echo %s > %s" % (p, a))
 
     def _write_file(self, f):
-        self._remove_directory(f)
-            
-        f = open(f, 'w')
-        map(lambda x: f.write(x), self._packages)
-        f.close()
+        if not self._dry_run:
+            self._remove_directory(f)
+                
+            f = open(f, 'w')
+            map(lambda x: f.write(x), self._packages)
+            f.close()
+        else:
+            pycolorize.verbose("rm -rf %s" % f)
+            map(lambda x: pycolorize.verbose("echo %s >> %s" % (x, f)), self._packages)
 
     def _create_directory(self, d):
         if not os.path.isdir(d):
