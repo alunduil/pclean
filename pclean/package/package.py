@@ -41,7 +41,13 @@ class Package:
         self._query = gentoolkit.query.Query(self._p)
 
         self._installed = True
+        self._cpv = None
+
+        if self._debug:
+            pycolorize.debug(__file__,{"Installed Package Count":len(self._query.find_installed())})
+            map(lambda x: pycolorize.debug(__file__,{"Installed":x.cpv}), self._query.find_installed())
         if len(self._query.find_installed()) < 1: self._installed = False
+        else: self._cpv = self._query.find_installed()[0]
 
     def __unicode__(self):
         return self.line()
@@ -52,12 +58,25 @@ class Package:
     def installed(self):
         return self._installed
 
+    def category(self):
+        return self._cpv.category
+
+    def atom(self):
+        return self._cpv.name
+
     def clean_use(self):
         # TODO Verify this is actually working ...
-        iuse = self._query.find_installed()[0].environment("IUSE").split()
-        if self._debug: pycolorize.debug(__file__,{"len(use)":len(self._use)})
-        filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use)
-        if self._debug: pycolorize.debug(__file__,{"len(use)":len(self._use)})
+        iuse = self._cpv.environment("IUSE").split()
+        if self._debug:
+            map(lambda x: pycolorize.debug(__file__,{"iuse":x}), iuse)
+            map(lambda x: pycolorize.debug(__file__,{"count":iuse.count(x.strip('-').strip('+'))}), self._use)
+        if self._verbose:
+            map(lambda x: pycolorize.status("Removing use flag, %s, from line, \"%s\"", x, self.line()), filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use))
+        if self._debug: 
+            map(lambda x: pycolorize.debug(__file__,{"flag (before)":x}), self._use)
+        self._use = filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use)
+        if self._debug: 
+            map(lambda x: pycolorize.debug(__file__,{"flag (after)":x}), self._use)
         
     def shortname(self):
-        return str(self._query.find_installed()[0].cp)
+        return str(self._cpv.cp)

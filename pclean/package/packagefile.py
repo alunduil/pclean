@@ -81,7 +81,7 @@ class PackageFile:
                 f.close()
         else:
             pycolorize.verbose("mkdir -p %s" % d)
-            for p in self._package:
+            for p in self._packages:
                 c = os.path.join(d, p.category())
                 pycolorize.verbose("mkdir -p %s" % c) 
                 a = os.path.join(c, p.atom())
@@ -107,9 +107,11 @@ class PackageFile:
         if os.path.isdir(d):
             map(lambda x: os.rmdir(os.path.join(x[0], x[2])), os.walk(f))
 
-    def clean(self):
-        filter(lambda x: x.installed(), self._packages)
-        map(lambda x: x.clean_use(), self._packages)
+    def clean(self, clean_use = False):
+        if self._verbose: 
+            map(lambda x: pycolorize.status("Removed \"%s\" since it is no longer installed.", x.line()), filter(lambda x: not x.installed(), self._packages))
+        self._packages = filter(lambda x: x.installed(), self._packages)
+        if clean_use: map(lambda x: x.clean_use(), self._packages)
 
     def sort(self):
         self._packages = sorted(self._packages, lambda x,y: cmp(x.shortname(), y.shortname()))
