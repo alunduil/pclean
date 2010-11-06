@@ -82,7 +82,7 @@ class PackageFile:
                 self._create_directory(c)
                 a = os.path.join(c, p.atom())
                 f = open(a, 'w')
-                f.write(p.line())
+                f.write(p.line() + "\n")
                 f.close()
         else:
             pycolorize.verbose("mkdir -p %s" % d)
@@ -97,7 +97,7 @@ class PackageFile:
             self._remove_directory(f)
                 
             f = open(f, 'w')
-            map(lambda x: f.write(x.line()), self._packages)
+            map(lambda x: f.write(x.line() + "\n"), self._packages)
             f.close()
         else:
             pycolorize.verbose("rm -rf %s" % f)
