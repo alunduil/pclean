@@ -57,10 +57,15 @@ class PackageFile:
         return ret
 
     def _read_file(self, f):
+        m = {}
         f = open(f, 'r')
-        ret = map(lambda x: Package(x, self._dry_run, self._debug, self._verbose), f.readlines())
+        for l in f:
+            p = l.split()[0]
+            u = l.split()[1:]
+            if p not in m: m[p] = []
+            m[p].extend(u)
         f.close()
-        return ret
+        return [Package(k + " " + " ".join(v), self._dry_run, self._debug, self._verbose) for k,v in m.iteritems()]
 
     def write(self, recursive = False):
         if recursive:
@@ -111,7 +116,11 @@ class PackageFile:
         if self._verbose: 
             map(lambda x: pycolorize.status("Removed \"%s\" since it is no longer installed.", x.line()), filter(lambda x: not x.installed(), self._packages))
         self._packages = filter(lambda x: x.installed(), self._packages)
-        if clean_use: map(lambda x: x.clean_use(), self._packages)
+        if clean_use: 
+            map(lambda x: x.clean_use(), self._packages)
+            if self._verbose:
+                map(lambda x: pycolorize.status("Removed \"%s\" since it has no more use flags.", x.line()), filter(lambda x: x.empty_use(), self._packages))
+            self._packages = filter(lambda x: not x.empty_use(), self._packages)
 
     def sort(self):
         self._packages = sorted(self._packages, lambda x,y: cmp(x.shortname(), y.shortname()))
