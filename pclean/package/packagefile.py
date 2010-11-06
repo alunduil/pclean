@@ -77,7 +77,7 @@ class PackageFile:
                 self._create_directory(c)
                 a = os.path.join(c, p.atom())
                 f = open(a, 'w')
-                f.write(p)
+                f.write(p.line())
                 f.close()
         else:
             pycolorize.verbose("mkdir -p %s" % d)
@@ -85,18 +85,18 @@ class PackageFile:
                 c = os.path.join(d, p.category())
                 pycolorize.verbose("mkdir -p %s" % c) 
                 a = os.path.join(c, p.atom())
-                pycolorize.verbose("echo %s > %s" % (p, a))
+                pycolorize.verbose("echo %s > %s" % (p.line(), a))
 
     def _write_file(self, f):
         if not self._dry_run:
             self._remove_directory(f)
                 
             f = open(f, 'w')
-            map(lambda x: f.write(x), self._packages)
+            map(lambda x: f.write(x.line()), self._packages)
             f.close()
         else:
             pycolorize.verbose("rm -rf %s" % f)
-            map(lambda x: pycolorize.verbose("echo %s >> %s" % (x, f)), self._packages)
+            map(lambda x: pycolorize.verbose("echo %s >> %s" % (x.line(), f)), self._packages)
 
     def _create_directory(self, d):
         if not os.path.isdir(d):

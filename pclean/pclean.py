@@ -73,7 +73,7 @@ class PClean:
             ]
 
         for f in files:
-            if not os.access(f, os.W_OK):
+            if not os.access(f, os.F_OK):
                 if self._debug: pycolorize.debug(__file__, {"Cant access file ":f})
                 continue
 

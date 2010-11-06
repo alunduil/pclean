@@ -44,14 +44,20 @@ class Package:
         if len(self._query.find_installed()) < 1: self._installed = False
 
     def __unicode__(self):
-        return self._line
+        return self.line()
+
+    def line(self):
+        return self._p + " " + " ".join(self._use)
 
     def installed(self):
         return self._installed
 
     def clean_use(self):
+        # TODO Verify this is actually working ...
         iuse = self._query.find_installed()[0].environment("IUSE").split()
+        if self._debug: pycolorize.debug(__file__,{"len(use)":len(self._use)})
         filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use)
+        if self._debug: pycolorize.debug(__file__,{"len(use)":len(self._use)})
         
     def shortname(self):
         return str(self._query.find_installed()[0].cp)
