@@ -1,8 +1,7 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 ########################################################################
-# Copyright (C) 2008 by Alex Brandt <alunduil@alunduil.com>            #
+# Copyright (C) 2010 by Alex Brandt <alunduil@alunduil.com>            #
 #                                                                      #
 # This program is free software; you can redistribute it and#or modify #
 # it under the terms of the GNU General Public License as published by #
@@ -20,22 +19,39 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            #
 ########################################################################
 
-from sys import argv, exit
+import os
 
-from pclean import PClean, PCleanException
+import gentoolkit.query
 
 try:
     import pycolorize
 except:
-    sys.path.append(os.path.dirname(__file__) + "/vendor/pycolorize")
+    sys.path.append(os.path.dirname(__file__) + "/../vendor/pycolorize/")
     import pycolorize
 
-if __name__ == "__main__":
-    try:
-        application = PClean(argv)
-        application.Run()
-    except PCleanException, e:
-        if (len(e.GetMessage()) > 0): pycolorize.error(e.GetMessage())
-        exit(1)
-    exit(0)
+class Package:
+    def __init__(self, l, dry_run = False, debug = False, verbose = False):
+        self._p = l.strip('\n').split()[0]
+        self._use = l.strip('\n').split()[1:]
+        
+        self._dry_run = dry_run
+        self._debug = debug
+        self._verbose = verbose
 
+        self._query = gentoolkit.query.Query(self._p)
+
+        self._installed = True
+        if len(self._query.find_installed()) < 1: self._installed = False
+
+    def __unicode__(self):
+        return self._line
+
+    def installed(self):
+        return self._installed
+
+    def clean_use(self):
+        iuse = self._query.find_installed()[0].environment("IUSE").split()
+        filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use)
+        
+    def shortname(self):
+        return str(self._query.find_installed()[0].cp)

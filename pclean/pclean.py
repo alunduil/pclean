@@ -24,8 +24,13 @@ import optparse
 import textwrap
 import os
 
-import output
-from package import Package
+try:
+    import pycolorize
+except:
+    sys.path.append(os.path.dirname(__file__) + "/../vendor/pycolorize/")
+    import pycolorize
+
+from package import PackageFile
 
 class PClean:
     def __init__(self, argv):
@@ -66,14 +71,18 @@ class PClean:
             "/etc/portage/package.keywords",
             "/etc/portage/package.license",
             ]
+
         for f in files:
-            if not os.access(f, os.W_OK): continue
+            if not os.access(f, os.F_OK): # TODO Change to os.W_OK when not testing.
+                if self._debug: pycolorize.debug(__file__, {"Cant access file ":f})
+                continue
+
             pf = PackageFile(f, self._pretend, self._debug, self._verbose)
+            
             if self._destructive: pf.clean()
-            if self._pretend: 
-                output.verbose("%s:", name)
-                output.verbose(pf)
-            else: pf.write(self._reorganize)
+            if self._sort: pf.sort()
+            
+            pf.write(self._reorganize)
 
     def _parseOptions(self, argv, parser):
         verbose_help_list = [
