@@ -86,4 +86,4 @@ class Package:
         return len(self._use) < 1
         
     def shortname(self):
-        return str(self._cpv.cp)
+        return str(self._cpv[0].cp)
