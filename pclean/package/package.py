@@ -47,7 +47,10 @@ class Package:
             pycolorize.debug(__file__,{"Installed Package Count":len(self._query.find_installed())})
             map(lambda x: pycolorize.debug(__file__,{"Installed":x.cpv}), self._query.find_installed())
         if len(self._query.find_installed()) < 1: self._installed = False
-        else: self._cpv = self._query.find_installed()[0]
+        else: self._cpv = self._query.find_installed()
+
+    def __str__(self):
+        return self.line()
 
     def __unicode__(self):
         return self.line()
@@ -59,14 +62,15 @@ class Package:
         return self._installed
 
     def category(self):
-        return self._cpv.category
+        return self._cpv[0].category
 
     def atom(self):
-        return self._cpv.name
+        return self._cpv[0].name
 
     def clean_use(self):
-        # TODO Verify this is actually working ...
-        iuse = self._cpv.environment("IUSE").split()
+        iuse = []
+        map(lambda x: iuse.extend(x), map(lambda x: x.environment("IUSE").split(), self._cpv))
+
         if self._debug:
             map(lambda x: pycolorize.debug(__file__,{"iuse":x}), iuse)
             map(lambda x: pycolorize.debug(__file__,{"count":iuse.count(x.strip('-').strip('+'))}), self._use)
