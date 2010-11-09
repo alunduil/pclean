@@ -70,6 +70,7 @@ class Package:
     def clean_use(self):
         iuse = []
         map(lambda x: iuse.extend(x), map(lambda x: x.environment("IUSE").split(), self._cpv))
+        iuse = map(lambda x: x.strip('-').strip('+'), iuse)
 
         if self._debug:
             map(lambda x: pycolorize.debug(__file__,{"iuse":x}), iuse)
