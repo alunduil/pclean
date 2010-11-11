@@ -52,7 +52,7 @@ class PackageFile:
     def _read_directory(self, f):
         ret = []
         files = [f]
-        files = iitertools.chain(*[ [ os.path.join(x[0], fs) for fs in x[2] ] for x in os.walk(f) if os.path.isdir(f) ] )
+        if os.path.isdir(f): files = iitertools.chain(*[ [ os.path.join(x[0], fs) for fs in x[2] ] for x in os.walk(f) ] )
         
         for file in files: ret.extend(self._read_file(file))
 
