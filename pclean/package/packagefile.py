@@ -62,6 +62,7 @@ class PackageFile:
         m = {}
         f = open(f, 'r')
         for l in f:
+            if len(l.split()) < 1: continue
             p = l.split()[0]
             u = l.split()[1:]
             if p not in m: m[p] = []
