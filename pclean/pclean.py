@@ -79,7 +79,8 @@ class PClean:
 
             pf = PackageFile(f, self._pretend, self._debug, self._verbose)
             
-            if self._destructive: pf.clean(f.endswith("use"))
+            if self._destructive: 
+                pf.clean(reverse=f.endswith("mask"), clean_use=f.endswith("use"))
             if self._sort: pf.sort()
             
             pf.write(self._reorganize)
