@@ -62,6 +62,7 @@ class PackageFile:
         m = {}
         f = open(f, 'r')
         for l in f:
+            l = l.split('#')[0]
             if len(l.split()) < 1: continue
             p = l.split()[0]
             u = l.split()[1:]
