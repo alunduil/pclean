@@ -43,9 +43,6 @@ class Package:
         self._installed = True
         self._cpv = None
 
-        if self._debug:
-            pycolorize.debug(__file__,{"Installed Package Count":len(self._query.find_installed())})
-            map(lambda x: pycolorize.debug(__file__,{"Installed":x.cpv}), self._query.find_installed())
         if len(self._query.find_installed()) < 1: self._installed = False
         else: self._cpv = self._query.find_installed()
 
@@ -72,16 +69,9 @@ class Package:
         map(lambda x: iuse.extend(x), map(lambda x: x.environment("IUSE").split(), self._cpv))
         iuse = map(lambda x: x.strip('-').strip('+'), iuse)
 
-        if self._debug:
-            map(lambda x: pycolorize.debug(__file__,{"iuse":x}), iuse)
-            map(lambda x: pycolorize.debug(__file__,{"count":iuse.count(x.strip('-').strip('+'))}), self._use)
         if self._verbose:
             map(lambda x: pycolorize.status("Removing use flag, %s, from line, \"%s\"", x, self.line()), filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use))
-        if self._debug: 
-            map(lambda x: pycolorize.debug(__file__,{"flag (before)":x}), self._use)
         self._use = filter(lambda x: iuse.count(x.strip('-').strip('+')) > 0, self._use)
-        if self._debug: 
-            map(lambda x: pycolorize.debug(__file__,{"flag (after)":x}), self._use)
 
     def empty_use(self):
         return len(self._use) < 1

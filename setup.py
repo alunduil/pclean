@@ -23,7 +23,7 @@
 from distutils.core import setup
 
 setup(name='pclean',
-    version='0.12',
+    version='0.13',
     description="Automated /etc/portage cleaner.",
     author="Alex Brandt",
     author_email="alunduil@alunduil.com",

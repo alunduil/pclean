@@ -117,10 +117,10 @@ class PackageFile:
             map(lambda x: os.rmdir(os.path.join(x[0], x[2])), os.walk(f))
 
     def clean(self, reverse = False, clean_use = False):
-        if self._verbose: 
-            map(lambda x: pycolorize.status("Removed \"%s\" since it is no longer installed.", x.line()), filter(lambda x: not x.installed(), self._packages))
+        total = set(self._packages)
         if reverse: self._packages = filter(lambda x: not x.installed(), self._packages)
         else: self._packages = filter(lambda x: x.installed(), self._packages)
+        if self._verbose: map(lambda x: pycolorize.status("Removed \"%s\" since it is no longer installed.", x.line()), total - set(self._packages))
         # TODO Add invalid package removal ...
         if clean_use: 
             map(lambda x: x.clean_use(), self._packages)
@@ -129,5 +129,6 @@ class PackageFile:
             self._packages = filter(lambda x: not x.empty_use(), self._packages)
 
     def sort(self):
-        self._packages = sorted(self._packages, lambda x,y: cmp(x.shortname(), y.shortname()))
+        if len(self._packages) > 0: 
+            self._packages = sorted(self._packages, lambda x,y: cmp(x.shortname(), y.shortname()))
 
