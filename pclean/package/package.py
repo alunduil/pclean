@@ -66,12 +66,13 @@ class Package:
 
     def clean_use(self):
         iuse = []
+        total = set(self._use)
         map(lambda x: iuse.extend(x), map(lambda x: x.environment("IUSE").split(), self._cpv))
         iuse = map(lambda x: x.strip('-').strip('+'), iuse)
-
-        if self._verbose:
-            map(lambda x: pycolorize.status("Removing use flag, %s, from line, \"%s\"", x, self.line()), filter(lambda x: iuse.count(x.strip('-').strip('+')) < 1, self._use))
         self._use = filter(lambda x: iuse.count(x.strip('-').strip('+')) > 0, self._use)
+        self._use = map(lambda x: x.strip("+"), self._use)
+        self._use = list(set(self._use))
+        if self._verbose: map(lambda x: pycolorize.status("Removed use flag, %s, from line, \"%s\"", x, self.line()), total - set(self._use))
 
     def empty_use(self):
         return len(self._use) < 1
