@@ -43,8 +43,11 @@ class Package:
         self._installed = True
         self._cpv = None
 
-        if len(self._query.find_installed()) < 1: self._installed = False
-        else: self._cpv = self._query.find_installed()
+        try:
+            if len(self._query.find_installed()) < 1: self._installed = False
+            else: self._cpv = self._query.find_installed()
+        except gentoolkit.query.errors.GentoolkitInvalidAtom, e:
+            self._installed = False
 
     def __str__(self):
         return self.line()
