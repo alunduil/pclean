@@ -1,85 +1,93 @@
 # -*- coding: utf-8 -*-
 
-########################################################################
-# Copyright (C) 2010 by Alex Brandt <alunduil@alunduil.com>            #
-#                                                                      #
-# This program is free software; you can redistribute it and#or modify #
-# it under the terms of the GNU General Public License as published by #
-# the Free Software Foundation; either version 2 of the License, or    #
-# (at your option) any later version.                                  #
-#                                                                      #
-# This program is distributed in the hope that it will be useful,      #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of       #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
-# GNU General Public License for more details.                         #
-#                                                                      #
-# You should have received a copy of the GNU General Public License    #
-# along with this program; if not, write to the                        #
-# Free Software Foundation, Inc.,                                      #
-# 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            #
-########################################################################
+# Copyright (C) 2011 by Alex Brandt <alunduil@alunduil.com>
+#
+# This program is free software; you can redistribute it and#or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
-
+import sys
 import itertools
-
-try:
-    import pycolorize
-except:
-    sys.path.append(os.path.dirname(__file__) + "/../../vendor/pycolorize/")
-    import pycolorize
 
 from package import Package
 
-class PackageFile:
-    def __init__(self, f, dry_run = False, debug = False, verbose = False):
-        self._f = f
+class PackageFile(object):
+    def __init__(self, file_, dry_run = False, debug = False, verbose = False):
+        self._file = file_
         
         self._verbose = verbose
         self._debug = debug
         self._dry_run = dry_run
 
-        if self._debug: pycolorize.debug(__file__, {"self._f":self._f})
+        if self._debug: 
+            helpers.debug(__file__, file = self._file)
 
-        self._packages = self._get_packages(self._f)
+        self._packages = self._get_packages(self._file)
 
     def __unicode__(self):
         return '\n'.join(self._packages)
 
-    def _get_packages(self, f):
-        return self._read_directory(f)
+    def _get_packages(self, file_):
+        return self._read_directory(file_)
         
-    def _read_directory(self, f):
-        ret = []
-        files = [f]
-        if os.path.isdir(f): files = itertools.chain(*[ [ os.path.join(x[0], fs) for fs in x[2] ] for x in os.walk(f) ] )
-        
-        for file in files: ret.extend(self._read_file(file))
+    def _read_directory(self, directory):
+        packages = []
+        files = [directory]
 
-        return ret
+        if os.path.isdir(directory):
+            files = itertools.chain(*[[os.path.join(dirpath, filename) \
+                    for filename in filenames \
+                    for (dirpath, dirnames, filenames) in os.walk(directory))
 
-    def _read_file(self, f):
-        m = {}
-        f = open(f, 'r')
-        for l in f:
-            l = l.split('#')[0]
-            if len(l.split()) < 1: continue
-            p = l.split()[0]
-            u = l.split()[1:]
-            if p not in m: m[p] = []
-            m[p].extend(u)
-        f.close()
-        return [Package(k + " " + " ".join(v), self._dry_run, self._debug, self._verbose) for k,v in m.iteritems()]
+        for file_ in files:
+            packages.extend(self._read_file(file_))
+
+        return packages
+
+    def _read_file(self, file_):
+        packages = {}
+
+        file_ = open(file_, 'r')
+
+        for line in file_:
+            line = line.split('#')[0]
+
+            if len(line.split()) < 1: 
+                continue
+
+            package = line.split()[0]
+            use = line.split()[1:]
+
+            if package not in packages: 
+                packages[package] = []
+
+            packages[package].extend(use)
+
+        file_.close()
+
+        return [ Package(k + " " + " ".join(v), self._dry_run, self._debug, 
+            self._verbose) for k,v in packages.iteritems() ]
 
     def write(self, recursive = False):
         if recursive:
-            self._write_directory(self._f)
+            self._write_directory(self._file)
         else:
-            self._write_file(self._f)
+            self._write_file(self._file)
 
-    def _write_directory(self, d):
+    def _write_directory(self, directory):
         if not self._dry_run:
-            self._create_directory(d)
+            self._create_directory(directory)
 
             for p in self._packages:
                 c = os.path.join(d, p.category())
@@ -120,7 +128,8 @@ class PackageFile:
         total = set(self._packages)
         if reverse: self._packages = filter(lambda x: not x.installed(), self._packages)
         else: self._packages = filter(lambda x: x.installed(), self._packages)
-        if self._verbose: map(lambda x: pycolorize.status("Removed \"%s\" since it is no longer installed.", x.line()), total - set(self._packages))
+        if self._verbose: 
+            map(lambda x: helpers.colorize("BLUE", "Removed \"%s\" since it is no longer installed.", x.line()), total - set(self._packages))
         # TODO Add invalid package removal ...
         if clean_use: 
             map(lambda x: x.clean_use(), self._packages)

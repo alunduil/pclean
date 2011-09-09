@@ -20,14 +20,9 @@
 ########################################################################
 
 import os
+import sys
 
 import gentoolkit.query
-
-try:
-    import pycolorize
-except:
-    sys.path.append(os.path.dirname(__file__) + "/../vendor/pycolorize/")
-    import pycolorize
 
 class Package:
     def __init__(self, l, dry_run = False, debug = False, verbose = False):

@@ -17,6 +17,12 @@
 # Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import argparse
+import glob
+import os
+
+import helpers
+
+from package import PackageFile
 
 class PCleanApplication(object):
     def __init__(self):
@@ -139,6 +145,14 @@ class PCleanOptions(object):
                 ]
         self._parser.add_argument('--pretend', '-p', action = 'store_true',
                 default = False, help = ''.join(help_list))
+
+        # --color
+        help_list = [
+                "Enables colorized output."
+                ]
+        self._parser.add_argument('--color', 
+                choices = [ "none", "light", "dark", "auto" ],
+                default = "none", help = ''.join(help_list))
 
         return self._parser
 
