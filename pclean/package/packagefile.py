@@ -47,8 +47,8 @@ class PackageFile(object):
 
         if os.path.isdir(directory):
             files = itertools.chain(*[[os.path.join(dirpath, filename) \
-                    for filename in filenames \
-                    for (dirpath, dirnames, filenames) in os.walk(directory))
+                    for filename in filenames ] \
+                    for dirpath, dirnames, filenames in os.walk(directory)])
 
         for file_ in files:
             packages.extend(self._read_file(file_))
