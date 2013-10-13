@@ -1,6 +1,6 @@
 # Copyright (C) 2013 by Alex Brandt <alunduil@alunduil.com>
 #
-# margarine is freely distributable under the terms of an MIT-style license.
+# pclean is freely distributable under the terms of an MIT-style license.
 # See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 __all__ = [
@@ -42,6 +42,7 @@ PARAMETERS.add_argument('-l', '--log-level',
 
 PARAMETERS.add_argument('-i', '--in-place',
         metavar = 'SUFFIX',
+        default = '',
         help = \
                 'Overwrite the specified files in place.  Similar to `sed`, ' \
                 '%(prog)s can overwrite the requested files as they are ' \
@@ -49,15 +50,6 @@ PARAMETERS.add_argument('-i', '--in-place',
                 'explicitly requested through this option.  If a %(meta)s ' \
                 'is specified, the original file will be backed up to the ' \
                 'file with the %(meta)s.'
-        )
-
-PARAMETERS.add_argument('-r', '--recursive',
-        action = 'store_true',
-        help = \
-                'Create the linted output as a set of directories and  ' \
-                'files (e.g. `/etc/portage/package.use/category/package). ' \
-                'If this option is specified the above formatting will be ' \
-                'used; otherwise, the current structure will be preserved.'
         )
 
 PARAMETERS.add_argument('-I', '--include',

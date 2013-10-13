@@ -1,17 +1,18 @@
 # Copyright (C) 2013 by Alex Brandt <alunduil@alunduil.com>
 #
-# margarine is freely distributable under the terms of an MIT-style license.
+# pclean is freely distributable under the terms of an MIT-style license.
 # See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 import logging
 import os
+import sys
 
 logging.basicConfig(level = getattr(logging, os.environ.get('PCLEAN_LOGGING_LEVEL', 'warn').upper()))
 
 logger = logging.getLogger(__name__)
 
 from pclean.parameters import PARAMETERS
-from pclean.parsers import Parser
+from pclean.parsers import parse
 
 def write_file(filename, contents):
     '''Writes the specified file given the contents (name and blob).
@@ -41,6 +42,11 @@ def write_file(filename, contents):
 
     output = sys.stdout
 
+    _ = hasattr(PARAMETERS, 'in_place')
+    logger.debug('hasattr(PARAMETERS, in_place): %s', _)
+    if _:
+        logger.debug('PARAMETERS.in_place: %s', PARAMETERS.in_place)
+
     if hasattr(PARAMETERS, 'in_place'):
         output = open(filename, 'w')
 
@@ -49,17 +55,12 @@ def write_file(filename, contents):
 
             os.rename(filename, filename + PARAMETERS.in_place)
 
-    if not PARAMETERS.recursive:
-        logger.info('writing to %s', output)
+    logger.info('writing to %s', output)
 
     for line in contents:
-        if PARAMETERS.recursive and hasattr(PARAMETERS, 'in_place'):
-            output = open(os.path.join(filename, line[0]), 'w')
-            logger.info('writing to %s', output)
-
         logger.debug('writing %s', '{0} {1}'.format(line[0], ' '.join(line[1])))
 
-        output.write('{0} {1}'.format(line[0], ' '.join(line[1])))
+        output.write('{0} {1}'.format(line[0], ' '.join(line[1])).strip())
 
 def main():
     '''Main function for pclean.  Does all the things.
@@ -85,7 +86,7 @@ def main():
     for filename in PARAMETERS.filenames:
         logger.info('parsing %s', filename)
 
-        contents = Parser(filename)
+        contents = parse(filename)
 
         logger.debug('contents[0]: %s', contents[0])
         logger.debug('contents[-1]: %s', contents[-1])
@@ -93,8 +94,8 @@ def main():
         for linter in PARAMETERS.include - PARAMETERS.exclude:
             logger.info('linting %s', linter)
 
-            contents = linter(contents)
-        
+            contents = linter(filename, contents)
+
             logger.debug('contents[0]: %s', contents[0])
             logger.debug('contents[-1]: %s', contents[-1])
 
