@@ -1,3 +1,2 @@
-distfiles/
-MANIFEST
 *.pyc
+.coverage
