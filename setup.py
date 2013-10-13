@@ -1,46 +1,94 @@
-#!/usr/bin/env python -t3
-# -*- coding: utf-8 -*-
-
-# Copyright (C) 2011 by Alex Brandt <alunduil@alunduil.com>
+# Copyright (C) 2013 by Alex Brandt <alunduil@alunduil.com>
 #
-# This program is free software; you can redistribute it and#or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation; either version 2 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-# details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-# Place - Suite 330, Boston, MA  02111-1307, USA.
+# margarine is freely distributable under the terms of an MIT-style license.
+# See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-from distutils.core import setup
+# -----------------------------------------------------------------------------
+import sys
+import ConfigParser
+import traceback
 
-setup_params = {}
-setup_params['name'] = "pclean"
-setup_params['version'] = '0.15'
-setup_params['description'] = "".join([
-    "Automated /etc/portage/package.* cleaner.",
-    ])
-setup_params['author'] = "Alex Brandt"
-setup_params['author_email'] = "alunduil@alunduil.com"
-setup_params['url'] = "http://www.alunduil.com/programs/pclean/"
-setup_params['license'] = "GPL-2"
-setup_params['scripts'] = [
-        "bin/pclean",
+original_sections = sys.modules['ConfigParser'].ConfigParser.sections
+
+def monkey_sections(self):
+    '''Return a list of sections available; DEFAULT is not included in the list.
+
+    Monkey patched to exclude the nosetests section as well.
+
+    '''
+
+    _ = original_sections(self)
+
+    if any([ 'distutils/dist.py' in frame[0] for frame in traceback.extract_stack() ]) and _.count('nosetests'):
+        _.remove('nosetests')
+
+    return _
+
+sys.modules['ConfigParser'].ConfigParser.sections = monkey_sections
+# -----------------------------------------------------------------------------
+
+from ez_setup import use_setuptools
+use_setuptools()
+
+from setuptools import setup
+
+from pclean import information
+
+PARAMS = {}
+
+PARAMS['name'] = information.NAME
+PARAMS['version'] = information.VERSION
+PARAMS['description'] = information.DESCRIPTION
+PARAMS['long_description'] = information.LONG_DESCRIPTION
+PARAMS['author'] = information.AUTHOR
+PARAMS['author_email'] = information.AUTHOR_EMAIL
+PARAMS['url'] = information.URL
+PARAMS['license'] = information.LICENSE
+
+PARAMS['classifiers'] = [
+        'Development Status :: 1 - Planning',
+        'Environment :: Console',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3',
+        'Topic :: Utilities',
         ]
-setup_params['packages'] = [
+
+PARAMS['keywords'] = [
+        'portage',
+        'gentoo',
+        'lint',
+        ]
+
+PARAMS['provides'] = [
         'pclean',
-        'pclean.package',
         ]
-setup_params['data_files'] = [
-        ("shared/doc/%s-%s" % (setup_params['name'], setup_params['version']), [
-            "COPYING",
-            "README",
+
+with open('requirements.txt', 'r') as req_fh:
+    PARAMS['install_requires'] = req_fh.readlines()
+
+with open('test_pclean/requirements.txt', 'r') as req_fh:
+    PARAMS['tests_require'] = req_fh.readlines()
+
+PARAMS['test_suite'] = 'nose.collector'
+
+PARAMS['entry_points'] = {
+        'console_scripts': [
+            'pclean = pclean:main',
+            ],
+        }
+
+PARAMS['packages'] = [
+        'pclean',
+        'pclean.parsers',
+        ]
+
+PARAMS['data_files'] = [
+        ('share/doc/{P[name]}-{P[version]}'.format(P = PARAMS), [
+            'README.rst',
             ]),
         ]
-setup(**setup_params)
 
+setup(**PARAMS)
