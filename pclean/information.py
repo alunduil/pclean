@@ -16,3 +16,15 @@ URL = 'https://github.com/alunduil/pclean'
 LICENSE = 'MIT'
 
 COPY_YEAR = '2013'
+
+FILENAMES = [
+        'package.keywords',
+        'package.accept_keywords',
+        'package.mask',
+        'package.unmask',
+        'package.use',
+        'package.env',
+        'package.license',
+        'package.accept_restrict',
+        'package.cflags',
+        ]

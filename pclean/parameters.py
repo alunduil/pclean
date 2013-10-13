@@ -8,6 +8,7 @@ __all__ = [
         ]
 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +22,8 @@ __epilog = \
         '{i.LICENSE} license'
 
 PARAMETERS = argparse.ArgumentParser(
-        description = information.description,
-        epliog = __epilog.format(i = information)
+        description = information.DESCRIPTION,
+        epilog = __epilog.format(i = information)
         )
 
 PARAMETERS.add_argument('--version',
@@ -60,24 +61,28 @@ PARAMETERS.add_argument('-r', '--recursive',
         )
 
 PARAMETERS.add_argument('-I', '--include',
+        action = 'append',
         nargs = '*',
         metavar = 'LINTERS',
         default = LINTERS,
+        choices = LINTERS,
         help = \
                 'Specify %(meta)s that will be run against the specified ' \
                 'files.  Default: all available %(meta)s.'
         )
 
 PARAMETERS.add_argument('-E', '--exclude',
+        action = 'append',
         nargs = '*',
         metavar = 'LINTERS',
         default = [],
+        choices = LINTERS,
         help = \
                 'Specify %(meta)s that will NOT be run against the specified ' \
                 'files.  This removes items from include.  Default: None.'
         )
 
-PARAMETERS.add_argument('files',
+PARAMETERS.add_argument('filenames',
         action = 'append',
         nargs = '*',
         default = [ os.path.join(os.path.sep, 'etc', 'portage', _) for _ in information.FILENAMES ],
@@ -85,3 +90,5 @@ PARAMETERS.add_argument('files',
                 'The set of files to be checked by %(prog)s.  Default: ' \
                 '%(default)s'
         )
+
+PARAMETERS = PARAMETERS.parse_args()
