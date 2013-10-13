@@ -5,10 +5,10 @@
 
 # -----------------------------------------------------------------------------
 import sys
-import ConfigParser
+import configparser
 import traceback
 
-original_sections = sys.modules['ConfigParser'].ConfigParser.sections
+original_sections = sys.modules['configparser'].ConfigParser.sections
 
 def monkey_sections(self):
     '''Return a list of sections available; DEFAULT is not included in the list.
@@ -24,7 +24,7 @@ def monkey_sections(self):
 
     return _
 
-sys.modules['ConfigParser'].ConfigParser.sections = monkey_sections
+sys.modules['configparser'].ConfigParser.sections = monkey_sections
 # -----------------------------------------------------------------------------
 
 from ez_setup import use_setuptools
@@ -83,6 +83,7 @@ PARAMS['entry_points'] = {
 PARAMS['packages'] = [
         'pclean',
         'pclean.parsers',
+        'pclean.linters',
         ]
 
 PARAMS['data_files'] = [
