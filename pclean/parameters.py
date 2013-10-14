@@ -83,4 +83,5 @@ PARAMETERS.add_argument('filenames',
                 '%(default)s'
         )
 
-PARAMETERS = PARAMETERS.parse_args()
+if 'setup.py' not in sys.argv:
+    PARAMETERS = PARAMETERS.parse_args()
