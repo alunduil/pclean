@@ -23,7 +23,7 @@ class GeneralParserTest(BasePCleanTest):
         self.tmp_file.seek(0)
 
     def test_general_parser(self):
-        '''General Parser'''
+        '''parser: general'''
 
         logger.debug('temporary filename: %s', self.tmp_file.name)
 
