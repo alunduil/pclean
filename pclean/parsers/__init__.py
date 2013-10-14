@@ -4,8 +4,11 @@
 # See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
+
+from pclean import information
 
 from pclean.parsers.general import general_parser
 
