@@ -3,10 +3,8 @@
 # pclean is freely distributable under the terms of an MIT-style license.
 # See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-import mock
-import tempfile
-
 import logging
+import tempfile
 
 logger = logging.getLogger(__name__)
 
