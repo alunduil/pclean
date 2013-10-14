@@ -18,41 +18,18 @@ class BasePCleanTest(unittest.TestCase):
     def setUp(self):
         super(BasePCleanTest, self).setUp()
 
-        logger.debug('module: %s', self.__module__)
+        logger.debug('module: %s', __name__)
 
         _ = '.'.join([
-            'pclean',
-            self.__module__.replace('test_', '').replace('unit', ''),
+            __name__,
             'PARAMETERS',
-            ])
-
-        _ = _.replace('..', '.')
+            ]).replace('test_', '').replace('unit.', '')
 
         logger.info('patching %s', _)
 
         patcher = mock.patch(_)
         self.mock_parameters = patcher.start()
         self.addCleanup(patcher.stop)
-
-class WriteFileTest(BasePCleanTest):
-    def setUp(self):
-        super(WriteFileTest, self).setUp()
-
-        logger.info('patching builtins.open')
-
-        patcher = mock.patch('builtins.open', mock.mock_open())
-        self.mock_open = patcher.start()
-        self.addCleanup(patcher.stop)
-
-        logger.debug('mock_open(): %s', self.mock_open.return_value)
-
-        _ = sys.stdout
-
-        def cleanup():
-            sys.stdout = _
-
-        self.addCleanup(cleanup)
-        sys.stdout = self.mock_open.return_value
 
         self.contents = [
                 ( 'app-portage/layman', [ 'git', 'subversion', 'bazaar' ] ),
@@ -71,6 +48,24 @@ class WriteFileTest(BasePCleanTest):
                 '=dev-db/mysql-5.5.32',
                 'app-backup/rdiff-backup -* x86',
                 ]
+
+class WriteFileTest(BasePCleanTest):
+    def setUp(self):
+        super(WriteFileTest, self).setUp()
+
+        logger.info('patching builtins.open')
+
+        patcher = mock.patch('builtins.open', mock.mock_open())
+        self.mock_open = patcher.start()
+        self.addCleanup(patcher.stop)
+
+        _ = sys.stdout
+
+        def cleanup():
+            sys.stdout = _
+
+        self.addCleanup(cleanup)
+        sys.stdout = self.mock_open.return_value
 
     def test_write_options_none(self):
         '''write contents with options: none'''
