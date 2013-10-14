@@ -4,9 +4,5 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
-install:
-  - "pip install -q -r requirements.txt --use-mirrors"
-  - "pip install -q -r test_margarine/requirements.txt --use-mirrors"
 script:
-  - nosetests
   - python setup.py install
