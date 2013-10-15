@@ -4,6 +4,7 @@
 # See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 import logging
+# TODO Change gentoolkit dependency to portage.
 import gentoolkit.errors
 import gentoolkit.cpv
 
