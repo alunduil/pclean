@@ -42,6 +42,8 @@ def invalid_package_name_linter(filename, contents):
 
     return new_contents
 
+LINTERS['invalid_package_name'] = invalid_package_name_linter
+
 def valid_cpv(cpv, version = False):
     '''Validate a CPV string.
 
