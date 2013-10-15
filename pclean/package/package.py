@@ -28,7 +28,7 @@ class Package:
     def __init__(self, l, dry_run = False, debug = False, verbose = False):
         self._p = l.strip('\n').split()[0]
         self._use = l.strip('\n').split()[1:]
-        
+
         self._dry_run = dry_run
         self._debug = debug
         self._verbose = verbose
@@ -74,6 +74,6 @@ class Package:
 
     def empty_use(self):
         return len(self._use) < 1
-        
+
     def shortname(self):
         return str(self._cpv[0].cp)
