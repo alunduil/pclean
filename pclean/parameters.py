@@ -48,9 +48,9 @@ PARAMETERS.add_argument('-i', '--in-place',
                 'Overwrite the specified files in place.  Similar to `sed`, ' \
                 '%(prog)s can overwrite the requested files as they are ' \
                 'checked.  This is not a default action and must be ' \
-                'explicitly requested through this option.  If a %(meta)s ' \
+                'explicitly requested through this option.  If a %(metavar)s ' \
                 'is specified, the original file will be backed up to the ' \
-                'file with the %(meta)s.'
+                'file with the %(metavar)s.'
         )
 
 PARAMETERS.add_argument('-I', '--include',
@@ -60,8 +60,8 @@ PARAMETERS.add_argument('-I', '--include',
         default = LINTERS,
         choices = LINTERS,
         help = \
-                'Specify %(meta)s that will be run against the specified ' \
-                'files.  Default: all available %(meta)s.'
+                'Specify %(metavar)s that will be run against the specified ' \
+                'files.  Default: all available %(metavar)s.'
         )
 
 PARAMETERS.add_argument('-E', '--exclude',
@@ -71,7 +71,7 @@ PARAMETERS.add_argument('-E', '--exclude',
         default = [],
         choices = LINTERS,
         help = \
-                'Specify %(meta)s that will NOT be run against the specified ' \
+                'Specify %(metavar)s that will NOT be run against the specified ' \
                 'files.  This removes items from include.  Default: None.'
         )
 
