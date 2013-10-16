@@ -17,15 +17,15 @@ class InvalidUseFlagsLinterTest(BasePCleanTest):
 
         self.contents = [ _ for _ in self.contents if 'rdiff-backup' not in _[0] ]
 
-    def test_invalid_use_flags_linter_incorrect_filename(self):
-        '''linter: invalid_use_flags—incorrect filename'''
+    def test_invalid_use_flags_linter(self):
+        '''linter: invalid_use_flags'''
 
         result = invalid_use_flags_linter('/tmp/pclean.test', self.contents)
 
         self.assertEqual(self.contents, result)
 
-    def test_invalid_use_flags_linter_correct_filename(self):
-        '''linter: invalid_use_flags—correct filename'''
+    def test_invalid_use_flags_linter_package_use(self):
+        '''linter: invalid_use_flags—package.use'''
 
         result = invalid_use_flags_linter('/etc/portage/package.use', self.contents)
 
