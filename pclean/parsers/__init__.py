@@ -32,7 +32,7 @@ def parse(filename):
 
     '''
 
-    parsers = zip(information.FILENAMES, [
+    parsers = dict(zip(information.FILENAMES, [
         general_parser,
         general_parser,
         general_parser,
@@ -42,7 +42,7 @@ def parse(filename):
         general_parser,
         None, # TODO Check that the general_parser works.
         general_parser,
-        ])
+        ]))
 
     logger.debug('splitting %s', filename)
 
