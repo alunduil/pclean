@@ -38,6 +38,6 @@ def empty_use_flags_linter(filename, contents):
 
     logger.debug('linting %s', filename)
 
-    return [ _ for _ in contents if len(contents[1]) ]
+    return [ _ for _ in contents if len(_[1]) ]
 
 LINTERS['empty_use_flags'] = empty_use_flags_linter
