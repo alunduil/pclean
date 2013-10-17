@@ -78,6 +78,3 @@ PARAMETERS.add_argument('filenames',
         help = \
                 'The set of files to be checked by %(prog)s.'
         )
-
-if 'setup.py' not in sys.argv:
-    PARAMETERS = PARAMETERS.parse_args()

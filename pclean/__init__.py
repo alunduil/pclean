@@ -79,6 +79,8 @@ def main():
 
     error_count = 0
 
+    PARAMETERS = PARAMETERS.parse_args()
+
     # TODO Re-initialize logging.
     logging.basicConfig(level = getattr(logging, PARAMETERS.log_level.upper()))
 
