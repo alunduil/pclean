@@ -46,12 +46,12 @@ def write_file(filename, contents):
     logger.debug('PARAMETERS.in_place: %s', PARAMETERS.in_place)
 
     if PARAMETERS.in_place is not None:
-        output = open(filename, 'w')
-
         if len(PARAMETERS.in_place):
             logger.info('backup %s to %s', filename, filename + PARAMETERS.in_place)
 
             os.rename(filename, filename + PARAMETERS.in_place)
+
+        output = open(filename, 'w')
 
     logger.info('writing to %s', output)
 
