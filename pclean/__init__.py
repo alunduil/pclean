@@ -7,7 +7,7 @@ import logging
 import os
 import sys
 
-logging.basicConfig(level = getattr(logging, os.environ.get('PCLEAN_LOGGING_LEVEL', 'warn').upper()))
+logging.basicConfig(level = getattr(logging, os.environ.get('PCLEAN_LOG_LEVEL', 'warn').upper()))
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,10 @@ def main():
 
     error_count = 0
 
+    # TODO Re-initialize logging.
     logging.basicConfig(level = getattr(logging, PARAMETERS.log_level.upper()))
+
+    logger.debug('filenames: %s', PARAMETERS.filenames)
 
     for filename in PARAMETERS.filenames:
         logger.info('parsing %s', filename)

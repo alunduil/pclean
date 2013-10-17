@@ -53,7 +53,6 @@ PARAMETERS.add_argument('-i', '--in-place',
         )
 
 PARAMETERS.add_argument('-I', '--include',
-        action = 'append',
         nargs = '*',
         metavar = 'LINTER',
         default = LINTERS.keys(),
@@ -64,7 +63,6 @@ PARAMETERS.add_argument('-I', '--include',
         )
 
 PARAMETERS.add_argument('-E', '--exclude',
-        action = 'append',
         nargs = '*',
         metavar = 'LINTER',
         default = [ 'noop' ],
@@ -75,7 +73,6 @@ PARAMETERS.add_argument('-E', '--exclude',
         )
 
 PARAMETERS.add_argument('filenames',
-        action = 'append',
         nargs = '+',
         metavar = 'FILE',
         help = \
