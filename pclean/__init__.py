@@ -82,8 +82,7 @@ def main():
     global PARAMETERS
     PARAMETERS = PARAMETERS.parse_args()
 
-    # TODO Re-initialize logging.
-    logging.basicConfig(level = getattr(logging, PARAMETERS.log_level.upper()))
+    logger.setLevel(getattr(logging, PARAMETERS.log_level.upper()))
 
     logger.debug('filenames: %s', PARAMETERS.filenames)
 
