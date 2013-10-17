@@ -43,7 +43,6 @@ PARAMETERS.add_argument('-l', '--log-level',
 
 PARAMETERS.add_argument('-i', '--in-place',
         metavar = 'SUFFIX',
-        default = '',
         help = \
                 'Overwrite the specified files in place.  Similar to `sed`, ' \
                 '%(prog)s can overwrite the requested files as they are ' \
@@ -56,32 +55,31 @@ PARAMETERS.add_argument('-i', '--in-place',
 PARAMETERS.add_argument('-I', '--include',
         action = 'append',
         nargs = '*',
-        metavar = 'LINTERS',
-        default = LINTERS,
-        choices = LINTERS,
+        metavar = 'LINTER',
+        default = LINTERS.keys(),
+        choices = LINTERS.keys(),
         help = \
                 'Specify %(metavar)s that will be run against the specified ' \
-                'files.  Default: all available %(metavar)s.'
+                'files.  Default: %(default)s.'
         )
 
 PARAMETERS.add_argument('-E', '--exclude',
         action = 'append',
         nargs = '*',
-        metavar = 'LINTERS',
-        default = [],
-        choices = LINTERS,
+        metavar = 'LINTER',
+        default = [ 'noop' ],
+        choices = LINTERS.keys(),
         help = \
                 'Specify %(metavar)s that will NOT be run against the specified ' \
-                'files.  This removes items from include.  Default: None.'
+                'files.  This removes items from include.  Default: %(default)s.'
         )
 
 PARAMETERS.add_argument('filenames',
         action = 'append',
-        nargs = '*',
-        default = [ os.path.join(os.path.sep, 'etc', 'portage', _) for _ in information.FILENAMES ],
+        nargs = '+',
+        metavar = 'FILE',
         help = \
-                'The set of files to be checked by %(prog)s.  Default: ' \
-                '%(default)s'
+                'The set of files to be checked by %(prog)s.'
         )
 
 if 'setup.py' not in sys.argv:
