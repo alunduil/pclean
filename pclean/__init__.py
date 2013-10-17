@@ -79,6 +79,7 @@ def main():
 
     error_count = 0
 
+    global PARAMETERS
     PARAMETERS = PARAMETERS.parse_args()
 
     # TODO Re-initialize logging.
