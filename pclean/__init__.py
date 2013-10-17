@@ -43,12 +43,9 @@ def write_file(filename, contents):
 
     output = sys.stdout
 
-    _ = hasattr(PARAMETERS, 'in_place')
-    logger.debug('hasattr(PARAMETERS, in_place): %s', _)
-    if _:
-        logger.debug('PARAMETERS.in_place: %s', PARAMETERS.in_place)
+    logger.debug('PARAMETERS.in_place: %s', PARAMETERS.in_place)
 
-    if hasattr(PARAMETERS, 'in_place'):
+    if PARAMETERS.in_place is not None:
         output = open(filename, 'w')
 
         if len(PARAMETERS.in_place):
@@ -61,7 +58,7 @@ def write_file(filename, contents):
     for line in contents:
         logger.debug('writing %s', '{0} {1}'.format(line[0], ' '.join(line[1])))
 
-        output.write('{0} {1}'.format(line[0], ' '.join(line[1])).strip())
+        output.write('{0} {1}'.format(line[0], ' '.join(line[1])).strip() + '\n')
 
 def main():
     '''Main function for pclean.  Does all the things.
