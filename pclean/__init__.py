@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 from pclean.parameters import PARAMETERS
 from pclean.parsers import parse
+from pclean.linters import LINTERS
 
 def write_file(filename, contents):
     '''Writes the specified file given the contents (name and blob).
@@ -94,10 +95,10 @@ def main():
         logger.debug('contents[0]: %s', contents[0])
         logger.debug('contents[-1]: %s', contents[-1])
 
-        for linter in PARAMETERS.include - PARAMETERS.exclude:
+        for linter in set(PARAMETERS.include) - set(PARAMETERS.exclude):
             logger.info('linting %s', linter)
 
-            contents = linter(filename, contents)
+            contents = LINTERS[linter](filename, contents)
 
             logger.debug('contents[0]: %s', contents[0])
             logger.debug('contents[-1]: %s', contents[-1])
