@@ -15,9 +15,16 @@ class EmptyUseFlagsLinterTest(BasePCleanTest):
     def test_empty_use_flags_linter(self):
         '''linter: empty_use_flags'''
 
+        expected = [
+                ( 'app-portage/layman', [ 'git', 'subversion', 'bazaar' ] ),
+                ( 'sys-kernel/upkern', [ 'module-rebuild' ] ),
+                ( 'net-print/cups', [ '-usb' ] ),
+                ( 'app-backup/rdiff-backup', [ '-*', 'x86' ] ),
+                ]
+
         result = empty_use_flags_linter('/tmp/pclean.test', self.contents)
 
-        self.assertEqual(self.contents, result)
+        self.assertEqual(expected, result)
 
     def test_empty_use_flags_linter_package_unmask(self):
         '''linter: empty_use_flags—package.unmask'''
