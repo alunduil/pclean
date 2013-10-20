@@ -71,7 +71,7 @@ def valid_cpv(cpv, version = False):
 
     try:
         cpv = gentoolkit.cpv.CPV(cpv, validate = True)
-    except gentoolkit.errors.GentoolkitInvalidCPV as e:
+    except gentoolkit.errors.GentoolkitInvalidCPV:
         valid = False
 
     if version and not len(cpv.version):
