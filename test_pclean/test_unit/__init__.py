@@ -69,11 +69,11 @@ class WriteFileTest(BasePCleanTest):
     def test_write_options_none(self):
         '''write contents with options: none'''
 
-        del self.mock_parameters.in_place
+        self.mock_parameters.in_place = None
 
         write_file('/tmp/pclean.test', self.contents)
 
-        self.mock_open.assert_has_calls([ mock.call().write(_) for _ in self.written_contents ])
+        self.assertFalse(self.mock_open.called)
 
     def test_write_options_inplace0(self):
         '''write contents with options: in_place[0]'''
@@ -83,8 +83,6 @@ class WriteFileTest(BasePCleanTest):
         write_file('/tmp/pclean.test', self.contents)
 
         self.mock_open.assert_called_once_with('/tmp/pclean.test', 'w')
-
-        self.mock_open.assert_has_calls([ mock.call().write(_) for _ in self.written_contents ])
 
     def test_write_options_inplace1(self):
         '''write contents with options: in_place[1]'''
@@ -97,5 +95,3 @@ class WriteFileTest(BasePCleanTest):
             mock_rename.assert_called_once_with('/tmp/pclean.test', '/tmp/pclean.test.bak')
 
         self.mock_open.assert_called_once_with('/tmp/pclean.test', 'w')
-
-        self.mock_open.assert_has_calls([ mock.call().write(_) for _ in self.written_contents ])
