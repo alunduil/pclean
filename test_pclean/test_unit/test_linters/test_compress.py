@@ -15,15 +15,18 @@ class CompressLinterTest(BasePCleanTest):
     def test_compress_linter_incorrect_filename(self):
         '''linter: compress'''
 
-        result = compress_linter('/tmp/pclean.test', self.contents)
-
-        compressed_contents = [
-                ( '=dev-db/mysql-5.5.32', [] ),
-                ( '=media-libs/harfbuzz-0.9.18-r1', [] ),
-                ( 'app-backup/rdiff-backup', [ '-*', 'x86' ] ),
-                ( 'app-portage/layman', [ 'git', 'subversion', 'bazaar' ] ),
-                ( 'net-print/cups', [ '-usb' ] ),
+        contents = [
+                ( 'app-portage/layman', [ 'git' ] ),
+                ( 'app-portage/layman', [ 'subversion' ] ),
+                ( 'app-portage/layman', [ 'bazaar' ] ),
                 ( 'sys-kernel/upkern', [ 'module-rebuild' ] ),
+                ( 'net-print/cups', [ '-usb' ] ),
+                ( '=media-libs/harfbuzz-0.9.18-r1', [] ),
+                ( '=dev-db/mysql-5.5.32', [] ),
+                ( 'app-backup/rdiff-backup', [ '-*' ] ),
+                ( 'app-backup/rdiff-backup', [ 'x86' ] ),
                 ]
 
-        self.assertEqual(compressed_contents, result)
+        result = compress_linter('/tmp/pclean.test', contents)
+
+        self.assertEqual(sorted(self.contents), sorted(result))
