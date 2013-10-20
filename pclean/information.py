@@ -4,7 +4,7 @@
 # See COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 NAME = 'pclean'
-VERSION = '9999'
+VERSION = '1.0.0'
 DESCRIPTION = \
         'Linting utility for portage configuration files.'
 LONG_DESCRIPTION = \
